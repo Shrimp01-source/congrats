@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Graduation Surprise</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: auto;
+      background: #fdf6e3;
+      text-align: center;
+      font-family: 'Comic Sans MS', cursive;
+    }
+
+    h1 {
+      font-size: 100px;
+      color: #ff4081;
+      margin-top: 50px;
+      animation: pop 1s ease-out infinite alternate;
+    }
+
+    @keyframes pop {
+      0% { transform: scale(1); }
+      100% { transform: scale(1.1); }
+    }
+
+    .head {
+      width: 200px;
+      position: absolute;
+    }
+
+    .confetti {
+      position: absolute;
+      width: 20px;
+      height: 2%;
+      background: #ff4081;
+      animation: fall 5s linear infinite;
+    }
+
+    @keyframes fall {
+      0% { top: -10px; opacity: 1; }
+      100% { top: 100vh; opacity: 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Congratulations!!</h1>
+
+  <!-- Aaron (changable) -->
+  <img src="A_PIC1.jpg" class="head" style="left: 150px; top: 200px;">
+  <img src="A_PIC2.jpg" class="head" style="left: 450px; top: 400px;">
+  <img src="A_PIC3.jpg" class="head" style="left: 150px; top: 600px;">
+  <img src="A_PIC4.jpg" class="head" style="left: 450px; top: 800px;">
+  <img src="A_PIC5.jpg" class="head" style="left: 150px; top: 1000px;">
+  <!-- Gabby (changable)-->
+  <img src="G_PIC1.jpg" class="head" style="right: 150px; top: 200px;">
+  <img src="your-friend-head.png" class="head" style="right: 350px; top: 400px;">
+  <img src="your-friend-head.png" class="head" style="right: 150px; top: 600px;">
+  <img src="your-friend-head.png" class="head" style="right: 350px; top: 800px;">
+  <img src="your-friend-head.png" class="head" style="right: 150px; top: 1000px;">
+   
+  <script>
+    for (let i = 0; i < 100; i++) {
+      let confetti = document.createElement("div");
+      confetti.className = "confetti";
+      confetti.style.left = Math.random() * window.innerWidth + "px";
+      confetti.style.background = `hsl(${Math.random()*360}, 100%, 50%)`;
+      confetti.style.animationDuration = (Math.random() * 3 + 2) + "s";
+      document.body.appendChild(confetti);
+    }
+  </script>
+
+  <!-- Comment Section -->
+<div style="margin-top: 100px;">
+  <h2>message 🎉</h2>
+  <input type="text" id="name" placeholder="Your name" style="padding: 5px;">
+  <br><br>
+  <textarea id="message" placeholder="Type your message..." rows="4" cols="50" style="padding: 5px;"></textarea>
+  <br><br>
+  <button onclick="addComment()" style="padding: 10px 20px;">Post</button>
+
+  <div id="comments" style="margin-top: 20px; text-align: left; max-width: 500px; margin: 0 auto;"></div>
+</div>
+
+<script>
+  const adminPassword = "ag123"; // PASSWORD
+
+  // Load saved comments
+  window.onload = function () {
+    if (localStorage.getItem("gradComments")) {
+      document.getElementById("comments").innerHTML = localStorage.getItem("gradComments");
+      enableDeleteButtons();
+    }
+  }
+
+  function addComment() {
+    let name = document.getElementById('name').value.trim();
+    let msg = document.getElementById('message').value.trim();
+
+    if (name && msg) {
+      let commentBox = document.createElement("div");
+      commentBox.className = "comment-box";
+      commentBox.style.margin = "10px 0";
+      commentBox.style.padding = "10px";
+      commentBox.style.border = "1px solid #ccc";
+      commentBox.style.borderRadius = "8px";
+      commentBox.style.background = "#fff3f8";
+
+      commentBox.innerHTML = `
+        <strong>${name}:</strong><br>${msg}<br>
+        <button class="delete-btn" style="margin-top:5px;">Delete</button>
+      `;
+
+      document.getElementById("comments").appendChild(commentBox);
+
+      saveComments();
+      enableDeleteButtons();
+
+      document.getElementById('name').value = '';
+      document.getElementById('message').value = '';
+    } else {
+      alert("Please enter both your name and message.");
+    }
+  }
+
+  function enableDeleteButtons() {
+    let deleteButtons = document.querySelectorAll(".delete-btn");
+    deleteButtons.forEach(btn => {
+      btn.onclick = function () {
+        let confirmKey = prompt("Enter admin password to delete this comment:");
+        if (confirmKey === adminPassword) {
+          this.parentElement.remove();
+          saveComments();
+        } else {
+          alert("Incorrect password. You can't delete this.");
+        }
+      }
+    });
+  }
+
+  function saveComments() {
+    localStorage.setItem("gradComments", document.getElementById("comments").innerHTML);
+  }
+</script>
+
+<!-- delete button-->
+<button onclick="clearComments()" style="margin-top: 20px; background: red; color: white; padding: 10px;">🗑 Clear All Comments</button>
+
+<script>
+    function clearComments() {
+  let confirmKey = prompt("Enter admin password to clear all comments:");
+  if (confirmKey === adminPassword) {
+    localStorage.removeItem("gradComments");
+    document.getElementById("comments").innerHTML = "";
+    alert("All comments have been cleared.");
+  } else {
+    alert("Incorrect password. Access denied.");
+  }
+}
+</script>
+
+</body>
+</html>
